@@ -13,6 +13,11 @@ jobs:
     steps:
 
     - uses: actions/checkout@v4
+    - name: Show repository info
+      run: |
+        echo "Repository: $GITHUB_REPOSITORY"
+        echo "Reference: $GITHUB_REF"
+        echo "Commit SHA: $GITHUB_SHA"
     - name: Get history and tags for SCM versioning to work
       run: |
         git fetch --prune --unshallow
