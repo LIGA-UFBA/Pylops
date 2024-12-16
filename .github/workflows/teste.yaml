@@ -22,6 +22,12 @@ jobs:
       run: | 
         echo "Running as: $GITHUB_ACTOR"
         echo "Testezin"
+    - name: Create a tag
+      run: |
+        git config user.name "GitHub Action"
+        git config user.email "actions@github.com"
+        git tag v1.0.0
+        git push origin v1.0.0
     - name: Get history and tags for SCM versioning to work
       run: |
         git fetch --prune --unshallow
