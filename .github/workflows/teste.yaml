@@ -18,6 +18,10 @@ jobs:
         echo "Repository: $GITHUB_REPOSITORY"
         echo "Reference: $GITHUB_REF"
         echo "Commit SHA: $GITHUB_SHA"
+    - name: Show GitHub Actor
+      run: | 
+        echo "Running as: $GITHUB_ACTOR"
+        echo "Testezin"
     - name: Get history and tags for SCM versioning to work
       run: |
         git fetch --prune --unshallow
