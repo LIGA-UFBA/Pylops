@@ -288,8 +288,8 @@ def plot_freq_spectrum(wavelet, freqs, amp, fpeak, fmax, idx_fmax):
     # Frequency-domain
     plt.subplot(1, 2, 2)
     plt.plot(freqs[:idx_fmax*2], amp[:idx_fmax*2], color='black')
-    plt.scatter(freqs[idx_peak], amp[idx_peak], color="red", marker="o", s=60, label=f"Peak Frequency {round(fpeak)} Hz")
-    plt.scatter(freqs[idx_fmax], amp[idx_fmax], color="orange", marker="o", s=60, label=f"Max Frequency {round(fmax)} Hz")
+    plt.scatter(freqs[idx_peak], amp[idx_peak], color="red", marker="o", s=60, label=f"Peak Frequency: {round(fpeak)} Hz")
+    plt.scatter(freqs[idx_fmax], amp[idx_fmax], color="orange", marker="o", s=60, label=f"Max Frequency: {round(fmax)} Hz")
     plt.vlines(x=round(fpeak), ymin=amp.min(), ymax=amp.max(), color='red')
     plt.xlabel("Frequency (Hz)")
     plt.ylabel("Amplitude")
