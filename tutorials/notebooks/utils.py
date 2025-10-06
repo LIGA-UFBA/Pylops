@@ -1,10 +1,9 @@
 import numpy as np
-from devito import Grid
+from typing import Union
 import matplotlib.pyplot as plt
-from examples.seismic import TimeAxis, RickerSource
 
-
-def create_mask_value(m, value):
+def create_mask_value(m: np.ndarray,
+                      value: float) -> np.ndarray:
     """
     Create a binary mask from a model array by thresholding.
 
@@ -25,7 +24,10 @@ def create_mask_value(m, value):
     return mask
 
 
-def Wiener_Filt(wav_orig, wav_targ, orig_data, eps=1e-4):
+def Wiener_Filt(wav_orig: np.ndarray,
+                wav_targ: np.ndarray, 
+                orig_data: np.ndarray, 
+                eps: float = 1e-4) -> np.ndarray:
     """
     Apply a frequency-domain Wiener shaping filter to map data from an original
     source wavelet to a target wavelet.
@@ -89,7 +91,10 @@ def Wiener_Filt(wav_orig, wav_targ, orig_data, eps=1e-4):
     return filtered_reorg
 
 
-def plot_data(data, shot=0, cmap='gray', title='Data'):
+def plot_data(data: np.ndarray, 
+              shot: int = 0,
+              cmap: str = 'gray',
+              title: str = 'Data') -> None:
     """
     Plot a single shot gather with automatic robust scaling.
 
@@ -121,8 +126,8 @@ def plot_data(data, shot=0, cmap='gray', title='Data'):
     plt.colorbar()
     plt.show()
 
-
-def get_alfa_g(yk, sk):
+def get_alfa_g(yk: np.ndarray, 
+               sk: np.ndarray) -> float:
     """
     Compute a step length using Barzilai–Borwein (BB) heuristics and select
     between BB1 and BB2 based on a safeguard.
@@ -163,49 +168,9 @@ def get_alfa_g(yk, sk):
         alfa = abb1
     return alfa
 
-
-def Ricker(shape, spacing, origin, dt, nt, fpeak, t0):
-    """
-    Build a Devito Ricker source and return the time series.
-
-    Parameters
-    ----------
-    shape : :obj:`tuple` or :obj:`numpy.ndarray`
-        Model shape ``(nx, nz)``.
-    spacing : :obj:`tuple` or :obj:`numpy.ndarray`
-        Grid spacing ``(dx, dz)`` in meters.
-    origin : :obj:`tuple` or :obj:`numpy.ndarray`
-        Grid origin ``(ox, oz)`` in meters.
-    dt : float
-        Time sampling in seconds (will be converted to milliseconds for Devito's TimeAxis).
-    nt : int
-        Number of time samples.
-    fpeak : float
-        Peak frequency in Hz (will be converted to kHz for Devito's RickerSource).
-    t0 : float or None
-        Wavelet delay in milliseconds for Devito. If None, Devito uses 1/f0 (in ms).
-
-    Returns
-    -------
-    :obj:`numpy.ndarray`
-        Wavelet samples as a 1D array with length `nt`.
-
-    Notes
-    -----
-    - Devito's `TimeAxis` expects milliseconds; we pass `dt*1e3`.
-    - Devito's `RickerSource` expects frequency in kHz; we pass `fpeak/1e3`.
-    - The returned array is `src.data[:]` reshaped to 1D (length `nt`).
-    """
-    extent = (shape[0]*spacing[0], shape[1]*spacing[1])
-    grid = Grid(shape=shape, extent=extent, origin=origin)
-    time_range = TimeAxis(start=0.0, step=dt*1e3, num=nt)
-
-    src = RickerSource(name="src", grid=grid, f0=fpeak/1e3,
-                       time_range=time_range, a=1.0, t0=t0)
-    return src.data[:].reshape(nt)
-
-
-def Frequency_spectrum(wavelet, dt, tol=1e-1):
+def Frequency_spectrum(wavelet: np.ndarray, 
+                       dt: float, 
+                       tol: float = 1e-1) -> tuple:
     """
     Compute the one-sided amplitude spectrum of a wavelet and return its peak 
     frequency and maximum non-zero frequency.
@@ -251,20 +216,29 @@ def Frequency_spectrum(wavelet, dt, tol=1e-1):
     return f, amp, f_peak, f_max
 
 
-def plot_freq_spectrum(wavelet, freqs, amp, fpeak, fmax, idx_fmax):
+def plot_freq_spectrum(wavelet: np.ndarray, 
+                       freqs: Union[tuple, np.ndarray], 
+                       amp: np.ndarray,
+                       fpeak: Union[int, float], 
+                       fmax: float, 
+                       idx_fmax: int):
     """
-    Plot the time-domain wavelet and its one-sided amplitude spectrum, highlighting the peak frequency.
+    Plot the time-domain wavelet and its one-sided amplitude spectrum, highlighting key frequency markers.
 
     Parameters
     ----------
-    wavelet : :obj:`numpy.ndarray`
+    wavelet : np.ndarray
         Time-domain wavelet (1D array).
-    freqs : :obj:`numpy.ndarray`
-        Frequency axis (Hz) matching `amp`.
-    amp : :obj:`numpy.ndarray`
-        Amplitude spectrum |W(f)|.
-    freq_peak : float
-        Peak frequency in Hz to be highlighted with a vertical line.
+    freqs : tuple or np.ndarray
+        Frequency axis (Hz), must align with the `amp` array.
+    amp : np.ndarray
+        One-sided amplitude spectrum |W(f)| of the wavelet.
+    fpeak : int or float
+        Peak frequency (Hz) to highlight with a vertical line and label.
+    fmax : float
+        Maximum frequency limit (Hz) for plotting the spectrum.
+    idx_fmax : int
+        Index corresponding to the maximum frequency (`fmax`) in the `freqs` array.
 
     Returns
     -------
@@ -272,8 +246,10 @@ def plot_freq_spectrum(wavelet, freqs, amp, fpeak, fmax, idx_fmax):
 
     Notes
     -----
-    - The vertical line is drawn at `round(freq_peak)` for readability.
-    - Adjust labels/titles as needed for your context (e.g., units).
+    - The wavelet is plotted in the time domain using its non-zero segment.
+    - The frequency spectrum is plotted up to `2 * idx_fmax` for clarity.
+    - The peak and maximum frequencies are highlighted with markers and labels.
+    - Vertical line is drawn at `round(fpeak)` for visibility.
     """
     
     begin = np.where(wavelet > 0)[0][0]
