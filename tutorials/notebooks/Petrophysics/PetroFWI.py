@@ -144,7 +144,7 @@ class PetroAcoustic_FWI_Multiscale():
                     ykvsh, skvsh = grads_vsh - gradp_vsh, self.vsh - pvsh
                     yksw, sksw = grads_sw - gradp_sw, self.sw - psw
                     
-                    alfa = get_alfa_g(ykphi, ykvsh, yksw, skphi, skvsh, sksw)
+                    alfa = get_alfa_g(yk1=ykphi, yk2=ykvsh, yk3=yksw, sk1=skphi, sk2=skvsh, sk3=sksw)
 
                 gradp_phi = deepcopy(grads_phi)
                 pphi = deepcopy(self.phi)
@@ -338,7 +338,7 @@ class PetroAcoustic_FWI():
                 ykvsh, skvsh = grads_vsh - gradp_vsh, self.vsh - pvsh
                 yksw, sksw = grads_sw - gradp_sw, self.sw - psw
                 
-                alfa = get_alfa_g(ykphi, ykvsh, yksw, skphi, skvsh, sksw)
+                alfa = get_alfa_g(yk1=ykphi, yk2=ykvsh, yk3=yksw, sk1=skphi, sk2=skvsh, sk3=sksw)
     
             gradp_phi = deepcopy(grads_phi)
             pphi = deepcopy(self.phi)
