@@ -314,7 +314,7 @@ class PetroAcoustic_FWI():
         for iter in range(iterations):
             print("Iteration ", iter + 1)
 
-            params_init = np.stack([self.vp, self.phi, self.vsh, self.sw])  
+            params_init = np.stack([self.phi, self.vsh, self.sw])  
             
             dcalc = self.op * params_init
             res = self.dobs - dcalc
@@ -323,7 +323,7 @@ class PetroAcoustic_FWI():
             print("FO: ", FO)
             print('')
             
-            grads_vp, grads_phi, grads_vsh, grads_sw = self.op.H * res 
+            grads_phi, grads_vsh, grads_sw = self.op.H * res 
 
             history[iter] = FO
         
@@ -389,7 +389,7 @@ class PetroAcoustic_FWI():
                         self.vsh[:,0:water_layer] = vsh0[:,0:water_layer] 
                         self.sw[:,0:water_layer] = sw0[:,0:water_layer] 
     
-                    params_wolfe = np.stack([self.vp, self.phi, self.vsh, self.sw])  
+                    params_wolfe = np.stack([self.phi, self.vsh, self.sw])  
                     
                     dcalc_wolfe = self.op * params_wolfe
                     res_wolfe = self.dobs - dcalc_wolfe
@@ -407,7 +407,7 @@ class PetroAcoustic_FWI():
                         self.vsh = self.vsh - alfa * grads_vsh
                         self.sw = self.sw - alfa * grads_sw
     
-                        params_wolfe = np.stack([self.vp, self.phi, self.vsh, self.sw])  
+                        params_wolfe = np.stack([self.phi, self.vsh, self.sw])  
                         
                         dcalc_wolfe = self.op * params_wolfe
                         FO_wolfe = 0.5 * norm(res)**2
