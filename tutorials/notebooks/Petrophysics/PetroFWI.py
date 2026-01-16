@@ -419,4 +419,4 @@ class PetroAcoustic_FWI():
                     
 
         print('Petro FWI is finished!')
-        return self.phi, self.vsh, self.sw, self.fo, dobsfilt
+        return self.phi, self.vsh, self.sw, self.fo, dcalc
