@@ -326,7 +326,7 @@ class PetroAcoustic_FWI():
             grads_phi, grads_vsh, grads_sw = self.op.H * res 
 
             history[iter] = FO
-            self.fo[freq] = history.tolist()
+            self.fo[iter] = history.tolist()
         
             grads_phi[:, 0:water_layer] = 0. 
             grads_vsh[:, 0:water_layer] = 0.
