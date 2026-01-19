@@ -269,7 +269,6 @@ class PetroAcoustic_FWI():
         self.vsh = vsh_init
         self.sw = sw_init
         self.dobs = dobs
-        self.fo = {} 
 
     def run(self, 
             iterations: int,  
@@ -326,7 +325,6 @@ class PetroAcoustic_FWI():
             grads_phi, grads_vsh, grads_sw = self.op.H * res 
 
             history[iter] = FO
-            self.fo[iter] = history.tolist()
         
             grads_phi[:, 0:water_layer] = 0. 
             grads_vsh[:, 0:water_layer] = 0.
@@ -420,4 +418,4 @@ class PetroAcoustic_FWI():
                     
 
         print('Petro FWI is finished!')
-        return self.phi, self.vsh, self.sw, self.fo, dcalc
+        return self.phi, self.vsh, self.sw, history, dcalc
