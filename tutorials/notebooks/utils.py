@@ -60,7 +60,11 @@ def Wiener_Filt(wav_orig: np.ndarray,
     - FFTs are computed with `np.fft.rfft(..., norm='ortho')`.
     - Filtering is done shot-wise and per-trace in the frequency domain.
     """
-    dobs_reorg = np.asarray([shot.T for shot in orig_data])  # (ns, nt, nx)
+    # dobs_reorg = np.asarray([shot.T for shot in orig_data])  # (ns, nt, nx)
+    if orig_data.shape[1] > orig_data.shape[2]:
+        dobs_reorg = orig_data  # (ns, nx, nt) -> (ns, nt, nx)
+    else:
+        dobs_reorg = np.asarray([shot.T for shot in orig_data]) # (ns, nx, nt) -> (ns, nt, nx)
     ns, nt, nx = dobs_reorg.shape
     nt_o = 2 * nt
 
